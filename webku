@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hitung Kolom</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      border: 1px solid #555;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #1f1f1f;
+      border: 1px solid #444;
+    }
+    .box {
+      display: inline-block;
+      padding: 10px 15px;
+      margin: 3px;
+      background-color: #333;
+      border: 1px solid #666;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔢 Sistem Hitung Kolom</h2>
+
+  <label>Masukkan bilangan (pisahkan dengan koma):</label><br/>
+  <input type="text" id="inputBilangan" placeholder="Contoh: 2,3,4,5,6"/><br/>
+
+  <label>Masukkan jumlah kolom:</label><br/>
+  <input type="number" id="inputKolom" placeholder="Contoh: 3"/><br/>
+
+  <button onclick="hitung()">Hitung</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function hitung() {
+      const angkaInput = document.getElementById("inputBilangan").value;
+      const kolom = parseInt(document.getElementById("inputKolom").value);
+      const angkaArray = angkaInput.split(',').map(a => parseInt(a.trim())).filter(a => !isNaN(a));
+      const jumlahAngka = angkaArray.length;
+
+      if (jumlahAngka === 0 || isNaN(kolom) || kolom <= 0) {
+        document.getElementById("output").innerHTML = "<p>❌ Input tidak valid.</p>";
+        return;
+      }
+
+      // Mode 1: angka boleh diulang
+      const hasil1 = Math.pow(jumlahAngka, kolom);
+      let box1 = "";
+      for (let i = 0; i < kolom; i++) {
+        box1 += `<div class='box'>${jumlahAngka}</div>`;
+      }
+      const perkalian1 = Array(kolom).fill(jumlahAngka).join(" x ");
+
+      // Mode 2: angka tidak boleh diulang
+      let hasil2 = 1;
+      let box2 = "";
+      let faktorArr = [];
+      for (let i = 0; i < kolom; i++) {
+        let val = jumlahAngka - i;
+        if (val <= 0) {
+          hasil2 = 0;
+          break;
+        }
+        hasil2 *= val;
+        faktorArr.push(val);
+        box2 += `<div class='box'>${val}</div>`;
+      }
+
+      const outputHTML = `
+        <p>Jumlah bilangan: <strong>${jumlahAngka}</strong></p>
+        <p>Jumlah kolom: <strong>${kolom}</strong></p>
+
+        <p><strong>Mode 1 (boleh diulang):</strong></p>
+        ${box1}<br/>
+        <strong>${perkalian1} = ${hasil1}</strong><br/><br/>
+
+        <p><strong>Mode 2 (tidak boleh diulang):</strong></p>
+        ${box2}<br/>
+        <strong>${faktorArr.join(" x ")} = ${hasil2}</strong>
+      `;
+
+      document.getElementById("output").innerHTML = outputHTML;
+    }
+  </script>
+</body>
+</html>
