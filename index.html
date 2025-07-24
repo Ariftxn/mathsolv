@@ -3,103 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hitung Kolom</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      position: relative;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      background-color: #1e1e1e;
-      color: #f5f5f5;
-      border: 1px solid #555;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #1f1f1f;
-      border: 1px solid #444;
-    }
-    .box {
-      display: inline-block;
-      padding: 10px 15px;
-      margin: 3px;
-      background-color: #333;
-      border: 1px solid #666;
-      font-weight: bold;
-    }
-
-    /* Menu Hamburger */
-    .menu-icon {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-      width: 30px;
-    }
-    .menu-icon div {
-      width: 100%;
-      height: 4px;
-      background-color: #fff;
-      margin: 6px 0;
-      transition: 0.4s;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #1f1f1f;
-      border: 1px solid #444;
-      padding: 10px;
-      display: none;
-    }
-
-    .dropdown a {
-      display: block;
-      color: #f5f5f5;
-      text-decoration: none;
-      padding: 5px 10px;
-      border-bottom: 1px solid #333;
-    }
-
-    .dropdown a:hover {
-      background-color: #333;
-    }
-  </style>
+  <title>Multi Mode Solver</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <!-- Menu Hamburger -->
-  <div class="menu-icon" onclick="toggleMenu()">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-  <div class="dropdown" id="dropdownMenu">
-    <a href="https://maps.app.goo.gl/AjWB6zsNy1ZaMXuo9?g_st=ac" target="_blank">📍 Bakso Rudal</a>
+<body class="bg-gray-900 text-white min-h-screen">
+
+  <!-- Navbar / Hamburger -->
+  <div class="p-4 flex items-center">
+    <button onclick="toggleMenu()" class="text-2xl mr-4">&#9776;</button>
+    <h1 class="text-xl font-bold">Multi Mode Solver</h1>
   </div>
 
-  <h2>🔢 Sistem Hitung Kolom</h2>
+  <!-- Menu Dropdown -->
+  <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2">
+    <button onclick="showMode('kolom')" class="block w-full text-left py-1 hover:text-yellow-400">🔢 Hitung Kolom</button>
+    <button onclick="showMode('vektor')" class="block w-full text-left py-1 hover:text-yellow-400">📐 Vector Solver</button>
+  </div>
 
-  <label>Masukkan bilangan (pisahkan dengan koma):</label><br/>
-  <input type="text" id="inputBilangan" placeholder="Contoh: 2,3,4,5,6"/><br/>
+  <!-- MODE: Hitung Kolom -->
+  <div id="mode-kolom" class="p-4">
+    <h2 class="text-2xl font-semibold mb-4">🔢 Sistem Hitung Kolom</h2>
 
-  <label>Masukkan jumlah kolom:</label><br/>
-  <input type="number" id="inputKolom" placeholder="Contoh: 3"/><br/>
+    <label>Masukkan bilangan (pisahkan dengan koma):</label><br/>
+    <input type="text" id="inputBilangan" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 2,3,4,5,6"/>
 
-  <button onclick="hitung()">Hitung</button>
+    <label>Masukkan jumlah kolom:</label><br/>
+    <input type="number" id="inputKolom" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 3"/>
 
-  <div class="result" id="output"></div>
+    <button onclick="hitung()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Hitung</button>
 
+    <div class="mt-4 bg-gray-800 p-4 rounded" id="output"></div>
+  </div>
+
+  <!-- MODE: Vector Solver -->
+  <div id="mode-vektor" class="hidden p-4">
+    <h2 class="text-2xl font-semibold mb-4">📐 Vector Solver</h2>
+
+    <label>i (x):</label>
+    <input id="iVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 1"/>
+
+    <label>j (y):</label>
+    <input id="jVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 4"/>
+
+    <label>k (z):</label>
+    <input id="kVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 0"/>
+
+    <button onclick="solveVector()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Hitung Panjang Vektor</button>
+
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+      <p class="font-semibold">Langkah Perhitungan:</p>
+      <pre id="steps" class="mt-2 font-mono whitespace-pre-line">–</pre>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script>
     function toggleMenu() {
-      const menu = document.getElementById("dropdownMenu");
-      menu.style.display = menu.style.display === "block" ? "none" : "block";
+      const menu = document.getElementById("menu");
+      menu.classList.toggle("hidden");
+    }
+
+    function showMode(mode) {
+      document.getElementById("menu").classList.add("hidden");
+      document.getElementById("mode-kolom").classList.add("hidden");
+      document.getElementById("mode-vektor").classList.add("hidden");
+
+      if (mode === "kolom") {
+        document.getElementById("mode-kolom").classList.remove("hidden");
+      } else if (mode === "vektor") {
+        document.getElementById("mode-vektor").classList.remove("hidden");
+      }
     }
 
     function hitung() {
@@ -113,15 +86,13 @@
         return;
       }
 
-      // Mode 1: angka boleh diulang
       const hasil1 = Math.pow(jumlahAngka, kolom);
       let box1 = "";
       for (let i = 0; i < kolom; i++) {
-        box1 += `<div class='box'>${jumlahAngka}</div>`;
+        box1 += `<div class='inline-block px-3 py-1 m-1 bg-gray-700 border border-gray-500 rounded'>${jumlahAngka}</div>`;
       }
       const perkalian1 = Array(kolom).fill(jumlahAngka).join(" x ");
 
-      // Mode 2: angka tidak boleh diulang
       let hasil2 = 1;
       let box2 = "";
       let faktorArr = [];
@@ -133,7 +104,7 @@
         }
         hasil2 *= val;
         faktorArr.push(val);
-        box2 += `<div class='box'>${val}</div>`;
+        box2 += `<div class='inline-block px-3 py-1 m-1 bg-gray-700 border border-gray-500 rounded'>${val}</div>`;
       }
 
       const outputHTML = `
@@ -151,6 +122,32 @@
 
       document.getElementById("output").innerHTML = outputHTML;
     }
+
+    function solveVector() {
+      const i = parseFloat(document.getElementById("iVal").value) || 0;
+      const j = parseFloat(document.getElementById("jVal").value) || 0;
+      const k = parseFloat(document.getElementById("kVal").value) || 0;
+
+      const i2 = i ** 2;
+      const j2 = j ** 2;
+      const k2 = k ** 2;
+
+      const total = i2 + j2 + k2;
+      const sqrtVal = Math.sqrt(total);
+      const isPerfect = Number.isInteger(sqrtVal);
+
+      let stepStr = `|v| = √(${i}² + ${j}² + ${k}²)\n`;
+      stepStr += `    = √(${i2} + ${j2} + ${k2})\n`;
+      stepStr += `    = √${total}`;
+      if (isPerfect) {
+        stepStr += `\n    = ${sqrtVal}`;
+      }
+
+      document.getElementById("steps").textContent = stepStr;
+    }
+
+    // Default show mode
+    showMode("kolom");
   </script>
 </body>
 </html>
