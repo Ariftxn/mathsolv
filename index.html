@@ -57,13 +57,13 @@
     </div>
   </div>
 
-  <!-- MODE: Pecahan Solver (Kosong untuk lanjut nanti) -->
+  <!-- MODE: Pecahan Solver -->
   <div id="mode-pecahan" class="hidden p-4">
     <h2 class="text-2xl font-semibold mb-4">➗ Pecahan Solver</h2>
     <p class="text-gray-400">Fitur ini masih dalam pengembangan.</p>
   </div>
 
-  <!-- Scripts -->
+  <!-- Script -->
   <script>
     function toggleMenu() {
       document.getElementById("menu").classList.toggle("hidden");
@@ -131,17 +131,34 @@
       const j = parseFloat(document.getElementById("jVal").value) || 0;
       const k = parseFloat(document.getElementById("kVal").value) || 0;
 
-      const i2 = i ** 2;
-      const j2 = j ** 2;
-      const k2 = k ** 2;
+      const components = [];
+      const steps = [];
 
-      const total = i2 + j2 + k2;
-      const sqrtVal = Math.sqrt(total);
+      if (i !== 0) {
+        components.push(`${i}²`);
+        steps.push(i ** 2);
+      }
+      if (j !== 0) {
+        components.push(`${j}²`);
+        steps.push(j ** 2);
+      }
+      if (k !== 0) {
+        components.push(`${k}²`);
+        steps.push(k ** 2);
+      }
+
+      if (components.length === 0) {
+        document.getElementById("steps").textContent = "Semua komponen nol, panjang vektor = 0";
+        return;
+      }
+
+      const sum = steps.reduce((a, b) => a + b, 0);
+      const sqrtVal = Math.sqrt(sum);
       const isPerfect = Number.isInteger(sqrtVal);
 
-      let stepStr = `|v| = √(${i}² + ${j}² + ${k}²)\n`;
-      stepStr += `    = √(${i2} + ${j2} + ${k2})\n`;
-      stepStr += `    = √${total}`;
+      let stepStr = `|v| = √(${components.join(" + ")})\n`;
+      stepStr += `    = √(${steps.join(" + ")})\n`;
+      stepStr += `    = √${sum}`;
       if (isPerfect) {
         stepStr += `\n    = ${sqrtVal}`;
       }
@@ -149,7 +166,7 @@
       document.getElementById("steps").textContent = stepStr;
     }
 
-    // Show menu first
+    // Show menu on load
     showMode("menu");
   </script>
 </body>
