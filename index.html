@@ -15,19 +15,19 @@
   </div>
 
   <!-- Dropdown Menu -->
-  <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2">
-    <button onclick="showMode('menu')" class="block w-full text-left py-1 hover:text-yellow-400">🏠 Menu Utama</button>
-    <button onclick="showMode('kolom')" class="block w-full text-left py-1 hover:text-yellow-400">🔢 Hitung Kolom</button>
-    <button onclick="showMode('vektor')" class="block w-full text-left py-1 hover:text-yellow-400">📐 Vector Solver</button>
-    <button onclick="showMode('pecahan')" class="block w-full text-left py-1 hover:text-yellow-400">➗ Pecahan Solver</button>
+  <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2 space-y-2">
+    <button onclick="showMode('menu')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">🏠 Menu Utama</button>
+    <button onclick="showMode('kolom')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">🔢 Hitung Kolom</button>
+    <button onclick="showMode('vektor')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">📐 Vector Solver</button>
+    <button onclick="showMode('pecahan')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">➗ Pecahan Solver</button>
   </div>
 
   <!-- MAIN MENU -->
   <div id="mode-menu" class="flex-1 flex flex-col justify-center items-center text-center gap-6 p-4">
     <h2 class="text-3xl font-bold mb-6">Pilih Mode Solver</h2>
-    <button onclick="showMode('kolom')" class="bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
-    <button onclick="showMode('vektor')" class="bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
-    <button onclick="showMode('pecahan')" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
+    <button id="main-btn-1" onclick="showMode('kolom')" class="main-btn opacity-0 transform -translate-x-10 bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
+    <button id="main-btn-2" onclick="showMode('vektor')" class="main-btn opacity-0 transform translate-x-10 bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
+    <button id="main-btn-3" onclick="showMode('pecahan')" class="main-btn opacity-0 transform -translate-x-10 bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
   </div>
 
   <!-- MODE: Hitung Kolom -->
@@ -66,7 +66,24 @@
   <!-- Script -->
   <script>
     function toggleMenu() {
-      document.getElementById("menu").classList.toggle("hidden");
+      const menu = document.getElementById("menu");
+      const buttons = document.querySelectorAll(".menu-btn");
+
+      menu.classList.toggle("hidden");
+
+      if (!menu.classList.contains("hidden")) {
+        buttons.forEach(btn => {
+          btn.classList.add("opacity-0", "-translate-x-10");
+          btn.classList.remove("opacity-100", "translate-x-0");
+        });
+
+        buttons.forEach((btn, index) => {
+          setTimeout(() => {
+            btn.classList.remove("opacity-0", "-translate-x-10");
+            btn.classList.add("opacity-100", "translate-x-0", "transition", "duration-500");
+          }, index * 150);
+        });
+      }
     }
 
     function showMode(mode) {
@@ -166,8 +183,25 @@
       document.getElementById("steps").textContent = stepStr;
     }
 
-    // Show menu on load
-    showMode("menu");
+    function animateMainButtons() {
+      const buttons = [
+        document.getElementById("main-btn-1"),
+        document.getElementById("main-btn-2"),
+        document.getElementById("main-btn-3")
+      ];
+
+      buttons.forEach((btn, i) => {
+        setTimeout(() => {
+          btn.classList.remove("opacity-0", "-translate-x-10", "translate-x-10");
+          btn.classList.add("opacity-100", "translate-x-0", "transition", "duration-500");
+        }, i * 200);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      showMode("menu");
+      animateMainButtons();
+    });
   </script>
 </body>
 </html>
