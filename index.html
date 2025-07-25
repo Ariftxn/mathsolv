@@ -6,73 +6,76 @@
   <title>Multi Mode Solver</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-  <!-- Navbar / Hamburger -->
-  <div class="p-4 flex items-center">
+  <!-- Navbar -->
+  <div class="p-4 flex items-center bg-gray-800">
     <button onclick="toggleMenu()" class="text-2xl mr-4">&#9776;</button>
     <h1 class="text-xl font-bold">Multi Mode Solver</h1>
   </div>
 
-  <!-- Menu Dropdown -->
+  <!-- Dropdown Menu -->
   <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2">
+    <button onclick="showMode('menu')" class="block w-full text-left py-1 hover:text-yellow-400">🏠 Menu Utama</button>
     <button onclick="showMode('kolom')" class="block w-full text-left py-1 hover:text-yellow-400">🔢 Hitung Kolom</button>
     <button onclick="showMode('vektor')" class="block w-full text-left py-1 hover:text-yellow-400">📐 Vector Solver</button>
+    <button onclick="showMode('pecahan')" class="block w-full text-left py-1 hover:text-yellow-400">➗ Pecahan Solver</button>
+  </div>
+
+  <!-- MAIN MENU -->
+  <div id="mode-menu" class="flex-1 flex flex-col justify-center items-center text-center gap-6 p-4">
+    <h2 class="text-3xl font-bold mb-6">Pilih Mode Solver</h2>
+    <button onclick="showMode('kolom')" class="bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
+    <button onclick="showMode('vektor')" class="bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
+    <button onclick="showMode('pecahan')" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
   </div>
 
   <!-- MODE: Hitung Kolom -->
-  <div id="mode-kolom" class="p-4">
+  <div id="mode-kolom" class="hidden p-4">
     <h2 class="text-2xl font-semibold mb-4">🔢 Sistem Hitung Kolom</h2>
-
-    <label>Masukkan bilangan (pisahkan dengan koma):</label><br/>
+    <label>Masukkan bilangan (pisahkan dengan koma):</label>
     <input type="text" id="inputBilangan" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 2,3,4,5,6"/>
-
-    <label>Masukkan jumlah kolom:</label><br/>
+    <label>Masukkan jumlah kolom:</label>
     <input type="number" id="inputKolom" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 3"/>
-
     <button onclick="hitung()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Hitung</button>
-
     <div class="mt-4 bg-gray-800 p-4 rounded" id="output"></div>
   </div>
 
   <!-- MODE: Vector Solver -->
   <div id="mode-vektor" class="hidden p-4">
     <h2 class="text-2xl font-semibold mb-4">📐 Vector Solver</h2>
-
     <label>i (x):</label>
     <input id="iVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 1"/>
-
     <label>j (y):</label>
     <input id="jVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 4"/>
-
     <label>k (z):</label>
     <input id="kVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 0"/>
-
     <button onclick="solveVector()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Hitung Panjang Vektor</button>
-
     <div class="mt-4 bg-gray-800 p-4 rounded">
       <p class="font-semibold">Langkah Perhitungan:</p>
       <pre id="steps" class="mt-2 font-mono whitespace-pre-line">–</pre>
     </div>
   </div>
 
+  <!-- MODE: Pecahan Solver (Kosong untuk lanjut nanti) -->
+  <div id="mode-pecahan" class="hidden p-4">
+    <h2 class="text-2xl font-semibold mb-4">➗ Pecahan Solver</h2>
+    <p class="text-gray-400">Fitur ini masih dalam pengembangan.</p>
+  </div>
+
   <!-- Scripts -->
   <script>
     function toggleMenu() {
-      const menu = document.getElementById("menu");
-      menu.classList.toggle("hidden");
+      document.getElementById("menu").classList.toggle("hidden");
     }
 
     function showMode(mode) {
+      const modes = ['menu', 'kolom', 'vektor', 'pecahan'];
+      modes.forEach(id => {
+        document.getElementById(`mode-${id}`).classList.add('hidden');
+      });
+      document.getElementById(`mode-${mode}`).classList.remove('hidden');
       document.getElementById("menu").classList.add("hidden");
-      document.getElementById("mode-kolom").classList.add("hidden");
-      document.getElementById("mode-vektor").classList.add("hidden");
-
-      if (mode === "kolom") {
-        document.getElementById("mode-kolom").classList.remove("hidden");
-      } else if (mode === "vektor") {
-        document.getElementById("mode-vektor").classList.remove("hidden");
-      }
     }
 
     function hitung() {
@@ -146,8 +149,8 @@
       document.getElementById("steps").textContent = stepStr;
     }
 
-    // Default show mode
-    showMode("kolom");
+    // Show menu first
+    showMode("menu");
   </script>
 </body>
 </html>
