@@ -28,7 +28,6 @@
     <button onclick="showMode('menu')" class="block w-full text-left py-1 hover:text-yellow-400">🏠 Menu Utama</button>
     <button onclick="showMode('kolom')" class="block w-full text-left py-1 hover:text-yellow-400">🔢 Hitung Kolom</button>
     <button onclick="showMode('vektor')" class="block w-full text-left py-1 hover:text-yellow-400">📐 Vector Solver</button>
-    <button onclick="showMode('pecahan')" class="block w-full text-left py-1 hover:text-yellow-400">➗ Pecahan Solver</button>
     <button onclick="showMode('gaya')" class="block w-full text-left py-1 hover:text-yellow-400">⚡ Gaya Coulomb</button>
   </div>
 
@@ -37,7 +36,6 @@
     <h2 class="text-3xl font-bold mb-6">Pilih Mode Solver</h2>
     <button onclick="showMode('kolom')" class="bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
     <button onclick="showMode('vektor')" class="bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
-    <button onclick="showMode('pecahan')" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
     <button onclick="showMode('gaya')" class="bg-yellow-600 hover:bg-yellow-700 text-white text-lg px-6 py-3 rounded">⚡ Gaya Coulomb</button>
   </div>
 
@@ -45,9 +43,9 @@
   <div id="mode-kolom" class="hidden p-4">
     <h2 class="text-2xl font-semibold mb-4">🔢 Sistem Hitung Kolom</h2>
     <label>Masukkan bilangan (pisahkan dengan koma):</label>
-    <input type="text" id="inputBilangan" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 2,3,4,5,6"/>
+    <input type="text" id="inputBilangan" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 1,2,3"/>
     <label>Masukkan jumlah kolom:</label>
-    <input type="number" id="inputKolom" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 3"/>
+    <input type="number" id="inputKolom" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 1"/>
     <button onclick="hitung()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Hitung</button>
     <div class="mt-4 bg-gray-800 p-4 rounded" id="output"></div>
   </div>
@@ -58,9 +56,9 @@
     <label>i (x):</label>
     <input id="iVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 1"/>
     <label>j (y):</label>
-    <input id="jVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 4"/>
+    <input id="jVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 1"/>
     <label>k (z):</label>
-    <input id="kVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 0"/>
+    <input id="kVal" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="contoh: 1"/>
     <button onclick="solveVector()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Hitung Panjang Vektor</button>
     <div class="mt-4 bg-gray-800 p-4 rounded">
       <p class="font-semibold">Langkah Perhitungan:</p>
@@ -68,25 +66,22 @@
     </div>
   </div>
 
-  <!-- MODE: Pecahan Solver -->
-  <div id="mode-pecahan" class="hidden p-4">
-    <h2 class="text-2xl font-semibold mb-4">➗ Pecahan Solver</h2>
-    <p class="text-gray-400">Fitur ini masih dalam pengembangan.</p>
-  </div>
-
   <!-- MODE: Gaya Coulomb -->
   <div id="mode-gaya" class="hidden p-4">
     <h2 class="text-2xl font-semibold mb-4">⚡ Resultan Gaya Coulomb</h2>
     <label>F₁₂ (N):</label>
-    <input id="f12" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 720" />
+    <input id="f12" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 1" />
     <label>F₁₃ (N):</label>
-    <input id="f13" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 360" />
+    <input id="f13" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 1" />
     <label>Cos (°):</label>
     <input id="sudut" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 60" />
     <button onclick="hitungResultanGaya()" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Hitung Resultan</button>
+    <button onclick="toggleLangkah()" id="toggleBtn" class="mt-2 bg-gray-600 hover:bg-gray-700 px-4 py-1 rounded">Tampilkan versi dibulatkan</button>
     <div class="mt-4 bg-gray-800 p-4 rounded">
       <p class="font-semibold">Hasil dan Langkah:</p>
-      <pre id="hasilGaya" class="mt-2 font-mono whitespace-pre-line">–</pre>
+      <div class="overflow-x-auto">
+        <pre id="hasilGaya" class="mt-2 font-mono whitespace-pre">–</pre>
+      </div>
     </div>
   </div>
 
@@ -97,7 +92,7 @@
     }
 
     function showMode(mode) {
-      const modes = ['menu', 'kolom', 'vektor', 'pecahan', 'gaya'];
+      const modes = ['menu', 'kolom', 'vektor', 'gaya'];
       modes.forEach(id => {
         const el = document.getElementById(`mode-${id}`);
         el.classList.add('hidden');
@@ -106,9 +101,8 @@
 
       const showEl = document.getElementById(`mode-${mode}`);
       showEl.classList.remove('hidden');
-      void showEl.offsetWidth; // reflow
+      void showEl.offsetWidth;
       showEl.classList.add('animate-fade-in');
-
       document.getElementById("menu").classList.add("hidden");
     }
 
@@ -178,6 +172,8 @@
       document.getElementById("steps").textContent = stepStr;
     }
 
+    let langkahAsli = "", langkahBulat = "", modeLangkah = "asli";
+
     function hitungResultanGaya() {
       const F12 = parseFloat(document.getElementById("f12").value);
       const F13 = parseFloat(document.getElementById("f13").value);
@@ -189,19 +185,53 @@
       }
 
       const cosTheta = Math.cos((sudut * Math.PI) / 180);
-      const resultan = Math.sqrt(F12 ** 2 + F13 ** 2 + 2 * F12 * F13 * cosTheta);
+      const F12_2 = F12 ** 2;
+      const F13_2 = F13 ** 2;
+      const duaF1F3cos = 2 * F12 * F13 * cosTheta;
+      const totalAsli = F12_2 + F13_2 + duaF1F3cos;
+      const resultanAsli = Math.sqrt(totalAsli);
 
-      const langkah =
+      langkahAsli =
         `R = √(F₁₂² + F₁₃² + 2 × F₁₂ × F₁₃ × cos(θ))\n` +
         `  = √(${F12}² + ${F13}² + 2 × ${F12} × ${F13} × cos(${sudut}))\n` +
-        `  = √(${F12 ** 2} + ${F13 ** 2} + ${(2 * F12 * F13 * cosTheta).toFixed(2)})\n` +
-        `  = √(${(F12 ** 2 + F13 ** 2 + 2 * F12 * F13 * cosTheta).toFixed(2)})\n` +
-        `  ≈ ${resultan.toFixed(2)} N`;
+        `  = √(${F12_2.toFixed(2)} + ${F13_2.toFixed(2)} + ${duaF1F3cos.toFixed(2)})\n` +
+        `  = √(${totalAsli.toFixed(2)})\n` +
+        `  ≈ ${resultanAsli.toFixed(2)} N`;
 
-      document.getElementById("hasilGaya").textContent = langkah;
+      const F12b = Math.round(F12);
+      const F13b = Math.round(F13);
+      const sudutB = Math.round(sudut);
+      const cosB = Math.cos((sudutB * Math.PI) / 180);
+      const F12_2b = Math.round(F12b ** 2);
+      const F13_2b = Math.round(F13b ** 2);
+      const duaF1F3cosB = Math.round(2 * F12b * F13b * cosB);
+      const totalBulat = F12_2b + F13_2b + duaF1F3cosB;
+      const resultanBulat = Math.round(Math.sqrt(totalBulat));
+
+      langkahBulat =
+        `R = √(F₁₂² + F₁₃² + 2 × F₁₂ × F₁₃ × cos(θ))\n` +
+        `  = √(${F12b}² + ${F13b}² + 2 × ${F12b} × ${F13b} × cos(${sudutB}))\n` +
+        `  = √(${F12_2b} + ${F13_2b} + ${duaF1F3cosB})\n` +
+        `  = √(${totalBulat})\n` +
+        `  = ${resultanBulat} N`;
+
+      modeLangkah = "asli";
+      document.getElementById("hasilGaya").textContent = langkahAsli;
+      document.getElementById("toggleBtn").textContent = "Tampilkan versi dibulatkan";
     }
 
-    // Show menu first
+    function toggleLangkah() {
+      if (modeLangkah === "asli") {
+        document.getElementById("hasilGaya").textContent = langkahBulat;
+        document.getElementById("toggleBtn").textContent = "Tampilkan versi asli";
+        modeLangkah = "bulat";
+      } else {
+        document.getElementById("hasilGaya").textContent = langkahAsli;
+        document.getElementById("toggleBtn").textContent = "Tampilkan versi dibulatkan";
+        modeLangkah = "asli";
+      }
+    }
+
     showMode("menu");
   </script>
 </body>
