@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Multi Mode Solver</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fade-in 0.4s ease-out;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
@@ -15,19 +24,21 @@
   </div>
 
   <!-- Dropdown Menu -->
-  <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2 space-y-2">
-    <button onclick="showMode('menu')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">🏠 Menu Utama</button>
-    <button onclick="showMode('kolom')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">🔢 Hitung Kolom</button>
-    <button onclick="showMode('vektor')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">📐 Vector Solver</button>
-    <button onclick="showMode('pecahan')" class="menu-btn block w-full text-left py-1 hover:text-yellow-400 transform transition duration-500 opacity-0 -translate-x-10">➗ Pecahan Solver</button>
+  <div id="menu" class="hidden bg-gray-800 text-white px-4 py-2">
+    <button onclick="showMode('menu')" class="block w-full text-left py-1 hover:text-yellow-400">🏠 Menu Utama</button>
+    <button onclick="showMode('kolom')" class="block w-full text-left py-1 hover:text-yellow-400">🔢 Hitung Kolom</button>
+    <button onclick="showMode('vektor')" class="block w-full text-left py-1 hover:text-yellow-400">📐 Vector Solver</button>
+    <button onclick="showMode('pecahan')" class="block w-full text-left py-1 hover:text-yellow-400">➗ Pecahan Solver</button>
+    <button onclick="showMode('gaya')" class="block w-full text-left py-1 hover:text-yellow-400">⚡ Gaya Coulomb</button>
   </div>
 
   <!-- MAIN MENU -->
   <div id="mode-menu" class="flex-1 flex flex-col justify-center items-center text-center gap-6 p-4">
     <h2 class="text-3xl font-bold mb-6">Pilih Mode Solver</h2>
-    <button id="main-btn-1" onclick="showMode('kolom')" class="main-btn opacity-0 transform -translate-x-10 bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
-    <button id="main-btn-2" onclick="showMode('vektor')" class="main-btn opacity-0 transform translate-x-10 bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
-    <button id="main-btn-3" onclick="showMode('pecahan')" class="main-btn opacity-0 transform -translate-x-10 bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
+    <button onclick="showMode('kolom')" class="bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded">🔢 Hitung Kolom</button>
+    <button onclick="showMode('vektor')" class="bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3 rounded">📐 Vector Solver</button>
+    <button onclick="showMode('pecahan')" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3 rounded">➗ Pecahan Solver</button>
+    <button onclick="showMode('gaya')" class="bg-yellow-600 hover:bg-yellow-700 text-white text-lg px-6 py-3 rounded">⚡ Gaya Coulomb</button>
   </div>
 
   <!-- MODE: Hitung Kolom -->
@@ -63,35 +74,41 @@
     <p class="text-gray-400">Fitur ini masih dalam pengembangan.</p>
   </div>
 
-  <!-- Script -->
+  <!-- MODE: Gaya Coulomb -->
+  <div id="mode-gaya" class="hidden p-4">
+    <h2 class="text-2xl font-semibold mb-4">⚡ Resultan Gaya Coulomb</h2>
+    <label>F₁₂ (N):</label>
+    <input id="f12" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 720" />
+    <label>F₁₃ (N):</label>
+    <input id="f13" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 360" />
+    <label>Cos (°):</label>
+    <input id="sudut" type="number" class="w-full p-2 mb-2 bg-gray-800 border border-gray-600 rounded" placeholder="Contoh: 60" />
+    <button onclick="hitungResultanGaya()" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">Hitung Resultan</button>
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+      <p class="font-semibold">Hasil dan Langkah:</p>
+      <pre id="hasilGaya" class="mt-2 font-mono whitespace-pre-line">–</pre>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script>
     function toggleMenu() {
-      const menu = document.getElementById("menu");
-      const buttons = document.querySelectorAll(".menu-btn");
-
-      menu.classList.toggle("hidden");
-
-      if (!menu.classList.contains("hidden")) {
-        buttons.forEach(btn => {
-          btn.classList.add("opacity-0", "-translate-x-10");
-          btn.classList.remove("opacity-100", "translate-x-0");
-        });
-
-        buttons.forEach((btn, index) => {
-          setTimeout(() => {
-            btn.classList.remove("opacity-0", "-translate-x-10");
-            btn.classList.add("opacity-100", "translate-x-0", "transition", "duration-500");
-          }, index * 150);
-        });
-      }
+      document.getElementById("menu").classList.toggle("hidden");
     }
 
     function showMode(mode) {
-      const modes = ['menu', 'kolom', 'vektor', 'pecahan'];
+      const modes = ['menu', 'kolom', 'vektor', 'pecahan', 'gaya'];
       modes.forEach(id => {
-        document.getElementById(`mode-${id}`).classList.add('hidden');
+        const el = document.getElementById(`mode-${id}`);
+        el.classList.add('hidden');
+        el.classList.remove('animate-fade-in');
       });
-      document.getElementById(`mode-${mode}`).classList.remove('hidden');
+
+      const showEl = document.getElementById(`mode-${mode}`);
+      showEl.classList.remove('hidden');
+      void showEl.offsetWidth; // reflow
+      showEl.classList.add('animate-fade-in');
+
       document.getElementById("menu").classList.add("hidden");
     }
 
@@ -130,16 +147,13 @@
       const outputHTML = `
         <p>Jumlah bilangan: <strong>${jumlahAngka}</strong></p>
         <p>Jumlah kolom: <strong>${kolom}</strong></p>
-
         <p><strong>Mode 1 (boleh diulang):</strong></p>
         ${box1}<br/>
         <strong>${perkalian1} = ${hasil1}</strong><br/><br/>
-
         <p><strong>Mode 2 (tidak boleh diulang):</strong></p>
         ${box2}<br/>
         <strong>${faktorArr.join(" x ")} = ${hasil2}</strong>
       `;
-
       document.getElementById("output").innerHTML = outputHTML;
     }
 
@@ -148,60 +162,47 @@
       const j = parseFloat(document.getElementById("jVal").value) || 0;
       const k = parseFloat(document.getElementById("kVal").value) || 0;
 
-      const components = [];
-      const steps = [];
+      const i2 = i ** 2;
+      const j2 = j ** 2;
+      const k2 = k ** 2;
 
-      if (i !== 0) {
-        components.push(`${i}²`);
-        steps.push(i ** 2);
-      }
-      if (j !== 0) {
-        components.push(`${j}²`);
-        steps.push(j ** 2);
-      }
-      if (k !== 0) {
-        components.push(`${k}²`);
-        steps.push(k ** 2);
-      }
-
-      if (components.length === 0) {
-        document.getElementById("steps").textContent = "Semua komponen nol, panjang vektor = 0";
-        return;
-      }
-
-      const sum = steps.reduce((a, b) => a + b, 0);
-      const sqrtVal = Math.sqrt(sum);
+      const total = i2 + j2 + k2;
+      const sqrtVal = Math.sqrt(total);
       const isPerfect = Number.isInteger(sqrtVal);
 
-      let stepStr = `|v| = √(${components.join(" + ")})\n`;
-      stepStr += `    = √(${steps.join(" + ")})\n`;
-      stepStr += `    = √${sum}`;
-      if (isPerfect) {
-        stepStr += `\n    = ${sqrtVal}`;
-      }
+      let stepStr = `|v| = √(${i}² + ${j}² + ${k}²)\n`;
+      stepStr += `    = √(${i2} + ${j2} + ${k2})\n`;
+      stepStr += `    = √${total}`;
+      if (isPerfect) stepStr += `\n    = ${sqrtVal}`;
 
       document.getElementById("steps").textContent = stepStr;
     }
 
-    function animateMainButtons() {
-      const buttons = [
-        document.getElementById("main-btn-1"),
-        document.getElementById("main-btn-2"),
-        document.getElementById("main-btn-3")
-      ];
+    function hitungResultanGaya() {
+      const F12 = parseFloat(document.getElementById("f12").value);
+      const F13 = parseFloat(document.getElementById("f13").value);
+      const sudut = parseFloat(document.getElementById("sudut").value);
 
-      buttons.forEach((btn, i) => {
-        setTimeout(() => {
-          btn.classList.remove("opacity-0", "-translate-x-10", "translate-x-10");
-          btn.classList.add("opacity-100", "translate-x-0", "transition", "duration-500");
-        }, i * 200);
-      });
+      if (isNaN(F12) || isNaN(F13) || isNaN(sudut)) {
+        document.getElementById("hasilGaya").textContent = "❌ Input tidak valid.";
+        return;
+      }
+
+      const cosTheta = Math.cos((sudut * Math.PI) / 180);
+      const resultan = Math.sqrt(F12 ** 2 + F13 ** 2 + 2 * F12 * F13 * cosTheta);
+
+      const langkah =
+        `R = √(F₁₂² + F₁₃² + 2 × F₁₂ × F₁₃ × cos(θ))\n` +
+        `  = √(${F12}² + ${F13}² + 2 × ${F12} × ${F13} × cos(${sudut}))\n` +
+        `  = √(${F12 ** 2} + ${F13 ** 2} + ${(2 * F12 * F13 * cosTheta).toFixed(2)})\n` +
+        `  = √(${(F12 ** 2 + F13 ** 2 + 2 * F12 * F13 * cosTheta).toFixed(2)})\n` +
+        `  ≈ ${resultan.toFixed(2)} N`;
+
+      document.getElementById("hasilGaya").textContent = langkah;
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      showMode("menu");
-      animateMainButtons();
-    });
+    // Show menu first
+    showMode("menu");
   </script>
 </body>
 </html>
